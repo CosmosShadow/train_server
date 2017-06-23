@@ -1,0 +1,2 @@
+examples/mnist/datasets/mnist/*
+*.pyc

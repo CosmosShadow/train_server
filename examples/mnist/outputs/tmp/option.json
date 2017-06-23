@@ -1,0 +1,11 @@
+{
+    "clip_grad": 0.1, 
+    "data_dir": "datasets/mnist/", 
+    "print_per": 10, 
+    "save_per": 100, 
+    "epochs": 10000.0, 
+    "lr": 0.01, 
+    "output": "tmp", 
+    "weight_decay": 1e-05, 
+    "data": "mnist"
+}
