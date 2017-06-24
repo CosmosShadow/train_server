@@ -16,8 +16,7 @@ class ModelCNNBase(torch.nn.Module):
 		self.fc1 = nn.Linear(32*7*7, 64)
 		self.fc2 = nn.Linear(64, 10)
 
-	def forward(self, x, training=True):
-		x = x / 255.0 - 0.5
+	def forward(self, x):
 		x = F.relu(F.max_pool2d(self.conv1(x), 2))
 		x = F.relu(F.max_pool2d(self.conv2(x), 2))
 		x = x.view(-1, 32*7*7)
@@ -36,12 +35,12 @@ class ModelCNN(lake.torch.network.Base):
 
 	def run(self, data, is_train=True):
 		x, y = data
-		x = torch.FloatTensor(x.astype(np.float32))
+		x = torch.FloatTensor(x.astype(np.float32) / 255.0 - 0.5)
 		y = torch.from_numpy(y)
 		if self.use_cuda:
 			x, y = x.cuda(), y.cuda()
 		x, y = Variable(x, volatile=not is_train), Variable(y)
-		output = self.model.forward(x, is_train)
+		output = self.model(x)
 		error = self.critera(output, y)
 
 		pred = output.data.max(1)[1]
@@ -52,9 +51,9 @@ class ModelCNN(lake.torch.network.Base):
 		else:
 			return dict(loss=float(error.data[0]), correct=correct)
 
-	def train(self, data):
+	def step_train(self, data):
 		return self.run(data)
 
-	def test(self, data):
+	def step_test(self, data):
 		return self.run(data, False)
 
