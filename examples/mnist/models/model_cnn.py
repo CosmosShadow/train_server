@@ -51,9 +51,9 @@ class ModelCNN(lake.torch.network.Base):
 		else:
 			return dict(loss=float(error.data[0]), correct=correct)
 
-	def step_train(self, data):
+	def step_train(self, step, data):
 		return self.run(data)
 
-	def step_test(self, data):
+	def step_test(self, step, data):
 		return self.run(data, False)
 
