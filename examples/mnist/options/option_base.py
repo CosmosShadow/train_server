@@ -9,8 +9,6 @@ class Options(lake.option.NNOptions):
 		self.parser.add_argument('--data', type=str, default='mnist', help='data')
 		self.parser.add_argument('--batch_size', type=int, default=64, help='batch_size')
 		self.parser.add_argument('--data_dir', type=str, default='datasets/mnist/', help='data')
-		
-		self.parser.add_argument('--gpu_ids', nargs='+', default=[0], help='gpu_ids, eg [0, 1]')
 
 if __name__ == '__main__':
 	opt = Options()()
