@@ -32,6 +32,7 @@ class ModelCNN(lake.torch.network.Base):
 		super(ModelCNN, self).__init__()
 		self.opt = opt
 		self.model = ModelCNNBase(opt)
+		super(ModelCNN, self).init_weights()
 		self.critera = F.nll_loss
 
 	def run(self, data, is_train=True):
