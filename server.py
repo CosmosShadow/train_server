@@ -20,9 +20,10 @@ def get_project(project_id):
 		if int(project['id']) == project_id:
 			return project
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-	return app.send_static_file('/static/index.html')
+	# return 'hello world'
+	return app.send_static_file('index.html')
 
 @app.route('/data/projects.json', methods=['GET'])
 def projects_json():
@@ -68,6 +69,7 @@ def train_json():
 	return json.dumps({'show': shows.values()})
 
 if __name__ == '__main__':
+	os.system('open -a /Applications/Safari.app http://0.0.0.0:8080')
 	app.run(host='0.0.0.0', port=8080)
 
 
