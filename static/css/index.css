@@ -1,0 +1,17 @@
+#top_nav{
+	height: 40px;
+	padding-left: 20px;
+	padding-top: 5px;
+	background-color: #444;
+	font-size: 20px;
+	color: white;
+}
+.active{
+	background-color: #428bca;
+	color: white;
+}
+
+.nav-sidebar{
+	background-color: #EEE;
+	min-height: 1000px;
+}
