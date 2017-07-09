@@ -13,7 +13,7 @@
 	min-height: 1000px;
 }
 
-.nav_li, .nav_li:hover{
+.nav_li{
 	/*margin: 1px;*/
 	border: solid white;
 	border-top-width: 0px;
@@ -21,6 +21,7 @@
 	border-left-width: 0px;
 	border-right-width: 0px;
 }
+
 .nav_li:hover{
 	background-color: #428bca!important;
 	color: white;
