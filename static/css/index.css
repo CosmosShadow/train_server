@@ -2,14 +2,14 @@
 	height: 40px;
 	padding-left: 20px;
 	padding-top: 5px;
-	background-color: #444;
+	background-color: #428bca;
 	font-size: 20px;
 	color: white;
 }
 
 
 .nav-sidebar{
-	background-color: #EEE;
+	background-color: #FDFDFD;
 	min-height: 1000px;
 }
 
@@ -23,15 +23,15 @@
 }
 
 .nav_li:hover{
-	background-color: #428bca!important;
-	color: white;
+	background-color: #DDD !important;
+	color: #428bca;
 }
 
 .nav_active{
-	background-color: #428bca!important;
-	color: white;
+	background-color: #DDD !important;
+	color: #428bca;
 }
 
 .nav_no_active{
-	background-color: #DDD;
+	background-color: #FAFAFA;
 }

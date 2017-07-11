@@ -40,13 +40,19 @@ def project_json():
 	projects = [project for project in projects if project['id'] == project_id]
 	if len(projects) > 0:
 		project = projects[0]
-		train_dirs = os.listdir(project['path'] + '/outputs/')
+		train_output_path = project['path'] + '/outputs/'
+		train_dirs = os.listdir(train_output_path)
 		train_dirs = [item for item in train_dirs if not (item.startswith('.') or item.startswith('..'))]
-		heads = ['项目']
-		bodys = [[item] for item in train_dirs]
+		heads = ['项目', 'option']
+		bodys = [[item, option_name(train_output_path + item)] for item in train_dirs]
 		return json.dumps(dict(heads=heads, bodys=bodys))
 	else:
 		return json.dumps([])
+
+
+def option_name(train_path):
+	options = lake.file.read(train_path + '/option.json')
+	return json.loads(options).get('option', '')
 
 
 @app.route('/data/train.json', methods=['GET'])
