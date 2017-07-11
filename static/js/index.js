@@ -6,8 +6,10 @@ $(document).ready(function() {
 	}
 
 	$.getJSON("/data/projects.json", function(result) {
-		console.log(result)
 		projects = result
+		if (index > result.length) {
+			index = 0
+		}
 		fresh_nav()
 	})
 
@@ -30,5 +32,41 @@ $(document).ready(function() {
 			console.log(index)
 			fresh_nav()
 		});
+
+		// 刷新右边内容
+		fresh_project(projects[index]['id'])
 	}
 })
+
+
+function fresh_project(project_id) {
+	$.getJSON("/data/project.json?project_id=" + project_id, function(result) {
+		heads = result['heads']
+		bodys = result['bodys']
+
+		$("#trains").html('')
+
+		console.log(heads)
+		console.log(bodys)
+
+		thead = $("<thead></thead>")
+		tr = $("<tr></tr>")
+		for (var i = 0; i < heads.length; i++) {
+			tr.append($("<td></td>").html(heads[i]))
+		}
+		thead.append(tr)
+
+		tbody = $("<tbody></tbody")
+		for (var i = 0; i < bodys.length; i++) {
+			body = bodys[i]
+			tr = $("<tr></tr>")
+			for (var j = 0; j < body.length; j++) {
+				tr.append($("<td></td>").html(body[j]))
+			}
+			tbody.append(tr)
+		}
+
+		$("#trains").append(thead)
+		$("#trains").append(tbody)
+	})
+}
