@@ -1,5 +1,7 @@
 $(document).ready(function() {
 	var projects = []
+	var trains = []
+
 	var index = Cookies.get('index')
 	if (index == null) {
 		index = 0
@@ -43,6 +45,7 @@ function fresh_project(project_id) {
 	$.getJSON("/data/project.json?project_id=" + project_id, function(result) {
 		heads = result['heads']
 		bodys = result['bodys']
+		trains = bodys
 
 		$("#trains").html('')
 
@@ -59,7 +62,8 @@ function fresh_project(project_id) {
 		tbody = $("<tbody></tbody")
 		for (var i = 0; i < bodys.length; i++) {
 			body = bodys[i]
-			tr = $("<tr></tr>")
+			tr = $("<tr class='train button'></tr>")
+			tr.attr('params', 'project=' + project_id + '&train=' + body[0])
 			for (var j = 0; j < body.length; j++) {
 				tr.append($("<td></td>").html(body[j]))
 			}
@@ -68,5 +72,13 @@ function fresh_project(project_id) {
 
 		$("#trains").append(thead)
 		$("#trains").append(tbody)
+
+		// 绑定按钮
+		$(".train").click(function(event) {
+			console.log(event)
+			console.log($(event.currentTarget))
+			url = '/static/train.html?' + $(event.currentTarget).attr('params')
+			window.open(url)
+		});
 	})
 }

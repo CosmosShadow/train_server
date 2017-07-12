@@ -58,10 +58,11 @@ def option_name(train_path):
 @app.route('/data/train.json', methods=['GET'])
 def train_json():
 	project_id = int(request.values.get('project', 1))
-	train = str(request.values.get('trian', 'tmp'))
+	train = str(request.values.get('train', 'tmp'))
 	the_project = get_project(project_id)
 
 	train_path = the_project['path'] + '/outputs/' + train + '/record.txt'
+	print train_path
 
 	if not os.path.exists(train_path):
 		return json.dumps({})
@@ -78,7 +79,6 @@ def train_json():
 			start_index = i
 		last_epoch = epoch
 	records = records[start_index:]
-
 
 	shows = collections.defaultdict(dict)
 	for record_json in records:
