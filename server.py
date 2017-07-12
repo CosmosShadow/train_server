@@ -43,7 +43,7 @@ def project_json():
 		train_output_path = project['path'] + '/outputs/'
 		train_dirs = os.listdir(train_output_path)
 		train_dirs = [item for item in train_dirs if not (item.startswith('.') or item.startswith('..'))]
-		heads = ['项目', 'option']
+		heads = ['train', 'option']
 		bodys = [[item, option_name(train_output_path + item)] for item in train_dirs]
 		return json.dumps(dict(heads=heads, bodys=bodys))
 	else:
