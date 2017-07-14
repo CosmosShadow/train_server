@@ -51,8 +51,12 @@ def project_json():
 
 
 def option_name(train_path):
-	options = lake.file.read(train_path + '/option.json')
-	return json.loads(options).get('option', '')
+	path = train_path + '/option.json'
+	if os.path.exists(path):
+		options = lake.file.read(path)
+		return json.loads(options).get('option', '')
+	else:
+		return ''
 
 
 @app.route('/data/train.json', methods=['GET'])
