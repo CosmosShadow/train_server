@@ -1,5 +1,4 @@
 examples/mnist/datasets/mnist/*
 *.pyc
 examples/mnist/outputs/*
-static/js/plotly/*
 data/projects.csv
