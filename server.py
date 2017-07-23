@@ -4,6 +4,7 @@ import json
 import lake
 from flask import Flask, request
 import collections
+import numpy as np
 
 
 app = Flask(__name__)
@@ -89,13 +90,18 @@ def train_json():
 		record = json.loads(record_json)
 		epoch = record['epoch']
 		for key, value in record.iteritems():
-			if key != 'epoch':
+			if key not in ['save', 'epoch', 'time']:
 				shows[key].setdefault('x', []).append(epoch)
 				shows[key].setdefault('y', []).append(value)
 	for key, show in shows.iteritems():
 		show['name'] = key
 		show['type'] = 'scatter'
+		if len(show['x']) > 500:
+			avg_count = len(show['x']) / 500
+			show['x'] = [show['x'][i] for i in range(0, len(show['x'])-avg_count+1, avg_count)]
+			show['y'] = [np.mean(show['y'][i:i+avg_count]) for i in range(0, len(show['y'])-avg_count+1, avg_count)]
 
+	print shows.keys()
 	return json.dumps({'show': shows.values()})
 
 if __name__ == '__main__':
