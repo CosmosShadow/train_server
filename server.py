@@ -5,6 +5,7 @@ import lake
 from flask import Flask, request
 import collections
 import numpy as np
+import datetime
 
 
 app = Flask(__name__)
@@ -44,20 +45,65 @@ def project_json():
 		train_output_path = project['path'] + '/outputs/'
 		train_dirs = os.listdir(train_output_path)
 		train_dirs = [item for item in train_dirs if not (item.startswith('.') or item.startswith('..'))]
-		heads = ['train', 'option']
-		bodys = [[item, option_name(train_output_path + item)] for item in train_dirs]
+		heads = ['option', '开始时间', '结束时间', '训练时长', 'eopchs', 'eopch', '进度', 'lr', 'current_lr', 'loss', '测试']
+		bodys = []
+		for item in train_dirs:
+			detail = train_detail(train_output_path + item)
+			option = detail[0]
+			bodys.append([option, item] + detail[1:])
 		return json.dumps(dict(heads=heads, bodys=bodys))
 	else:
 		return json.dumps([])
 
+def train_detail(train_path):
+	option = ''
+	end_time = ''
+	train_time = ''
+	epochs = 0
+	epoch = 0
+	lr = ''
+	current_lr = ''
+	loss = ''
+	test = ''
+	if os.path.exists(train_path + '/option.json'):
+		options = json.loads(lake.file.read(train_path + '/option.json'))
+		option = options.get('option', '')
+		epochs = int(options.get('epochs', ''))
+		lr = options.get('lr', '')
+	if os.path.exists(train_path + '/record.txt'):
+		records = lake.file.read(train_path + '/record.txt')
+		last_record = json.loads(records[-1])
+		epoch = int(last_record.get('epoch', ''))
+		loss = last_record.get('loss', '')
+		current_lr = last_record.get('lr', '')
 
-def option_name(train_path):
-	path = train_path + '/option.json'
-	if os.path.exists(path):
-		options = lake.file.read(path)
-		return json.loads(options).get('option', '')
+		most_find = 1000
+		for record in reversed(records[-most_find:]):
+			record_obj = json.loads(record)
+			has_test = False
+			test_dict = {}
+			for key in record_obj.keys():
+				if key.startswith('test_'):
+					has_test = True
+					test_dict[key[5:]] = record_obj[key]
+				if has_test:
+					test = json.dumps(test_dict)
+					break
+			if has_test:
+				break
+	if os.path.exists(train_path + '/train.log'):
+		train_log = lake.file.read(train_path + '/train.log')
+		if len(train_log) > 0:
+			begin_time = train_log[0][:len('2017-07-23 18:07:04')]
+			end_time = train_log[-1][:len('2017-07-23 18:07:04')]
+			begin = datetime.datetime.strptime(begin_time, '%Y-%m-%d %H:%M:%S')
+			end = datetime.datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
+			train_time = str(end - begin)
+	if epochs > 0:
+		progress = str(int(epoch * 100.0 / epochs)) + '%'
 	else:
-		return ''
+		progress = '0%'
+	return [option, end_time, train_time, epochs, epoch, progress, lr, current_lr, loss, test]
 
 
 @app.route('/data/train.json', methods=['GET'])

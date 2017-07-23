@@ -63,9 +63,14 @@ function fresh_project(project_id) {
 		for (var i = 0; i < bodys.length; i++) {
 			body = bodys[i]
 			tr = $("<tr class='train button'></tr>")
-			tr.attr('params', 'project=' + project_id + '&train=' + body[0])
+			tr.attr('params', 'project=' + project_id + '&train=' + body[1])
 			for (var j = 0; j < body.length; j++) {
-				tr.append($("<td></td>").html(body[j]))
+				content = body[j]
+				if (j == 1 | j == 2) {
+					content = content.substr(0, 10) + '&nbsp;&nbsp;' + content.substr(11, 8).replace(/-/g, ':')
+					console.log(content)
+				}
+				tr.append($("<td></td>").html(content))
 			}
 			tbody.append(tr)
 		}
