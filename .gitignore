@@ -2,3 +2,4 @@ examples/mnist/datasets/mnist/*
 *.pyc
 examples/mnist/outputs/*
 data/projects.csv
+gunicorn.pid
