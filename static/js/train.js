@@ -10,5 +10,5 @@ $(document).ready(function() {
 		})
 	}
 	refresh();
-	setInterval(refresh, 60);
+	// setInterval(refresh, 60);
 })
