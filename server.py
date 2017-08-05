@@ -47,7 +47,7 @@ def project_json():
 		train_dirs = [item for item in train_dirs if not (item.startswith('.') or item.startswith('..'))]
 		heads = ['option', '开始时间', '结束时间', '训练时长', 'eopchs', 'eopch', '进度', 'lr', 'current_lr', 'loss', '测试']
 		bodys = []
-		for item in train_dirs:
+		for item in reversed(train_dirs):
 			detail = train_detail(train_output_path + item)
 			option = detail[0]
 			bodys.append([option, item] + detail[1:])
