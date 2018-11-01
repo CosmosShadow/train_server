@@ -1,7 +1,7 @@
 # coding: utf-8
 import os
 import json
-import lake
+import lake.file
 from flask import Flask, request
 import collections
 import numpy as np
@@ -42,21 +42,21 @@ def project_json():
 	projects = [project for project in projects if project['id'] == project_id]
 	if len(projects) > 0:
 		project = projects[0]
-		train_output_path = project['path'] + '/outputs/'
+		train_output_path = project['path']
 		train_dirs = os.listdir(train_output_path)
 		train_dirs = [item for item in train_dirs if not (item.startswith('.') or item.startswith('..'))]
 		heads = ['option', '开始时间', '结束时间', '训练时长', 'eopchs', 'eopch', '进度', 'lr', 'current_lr', 'loss', '测试']
 		bodys = []
 		for item in reversed(train_dirs):
 			detail = train_detail(train_output_path + item)
-			option = detail[0]
-			bodys.append([option, item] + detail[1:])
+			option_name = detail[0]
+			bodys.append([option_name, item] + detail[1:])
 		return json.dumps(dict(heads=heads, bodys=bodys))
 	else:
 		return json.dumps([])
 
 def train_detail(train_path):
-	option = ''
+	option_name = ''
 	end_time = ''
 	train_time = ''
 	epochs = 0
@@ -67,7 +67,7 @@ def train_detail(train_path):
 	test = ''
 	if os.path.exists(train_path + '/option.json'):
 		options = json.loads(lake.file.read(train_path + '/option.json'))
-		option = options.get('option', '')
+		option_name = options.get('option_name', '')
 		epochs = int(options.get('epochs', ''))
 		lr = options.get('lr', '')
 	if os.path.exists(train_path + '/record.txt'):
@@ -103,7 +103,7 @@ def train_detail(train_path):
 		progress = str(int(epoch * 100.0 / epochs)) + '%'
 	else:
 		progress = '0%'
-	return [option, end_time, train_time, epochs, epoch, progress, lr, current_lr, loss, test]
+	return [option_name, end_time, train_time, epochs, epoch, progress, lr, current_lr, loss, test]
 
 
 @app.route('/data/train.json', methods=['GET'])
@@ -112,8 +112,7 @@ def train_json():
 	train = str(request.values.get('train', 'tmp'))
 	the_project = get_project(project_id)
 
-	train_path = the_project['path'] + '/outputs/' + train + '/record.txt'
-	print train_path
+	train_path = os.path.join(the_project['path'], train, 'record.txt')
 
 	if not os.path.exists(train_path):
 		return json.dumps({})
@@ -135,11 +134,11 @@ def train_json():
 	for record_json in records:
 		record = json.loads(record_json)
 		epoch = record['epoch']
-		for key, value in record.iteritems():
+		for key, value in record.items():
 			if key not in ['save', 'epoch', 'time']:
 				shows[key].setdefault('x', []).append(epoch)
 				shows[key].setdefault('y', []).append(value)
-	for key, show in shows.iteritems():
+	for key, show in shows.items():
 		show['name'] = key
 		show['type'] = 'scatter'
 		if len(show['x']) > 500:
@@ -147,8 +146,8 @@ def train_json():
 			show['x'] = [show['x'][i] for i in range(0, len(show['x'])-avg_count+1, avg_count)]
 			show['y'] = [np.mean(show['y'][i:i+avg_count]) for i in range(0, len(show['y'])-avg_count+1, avg_count)]
 
-	print shows.keys()
-	return json.dumps({'show': shows.values()})
+	print(shows.keys())
+	return json.dumps({'show': list(shows.values())})
 
 if __name__ == '__main__':
 	# os.system('open -a /Applications/Safari.app http://0.0.0.0:8080')
