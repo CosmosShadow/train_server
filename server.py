@@ -86,10 +86,8 @@ def train_detail(train_path):
 				if key.startswith('test_'):
 					has_test = True
 					test_dict[key[5:]] = record_obj[key]
-				if has_test:
-					test = json.dumps(test_dict)
-					break
 			if has_test:
+				test = json.dumps(test_dict)
 				break
 	if os.path.exists(train_path + '/train.log'):
 		train_log = lake.file.read(train_path + '/train.log')
