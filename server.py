@@ -45,12 +45,13 @@ def project_json():
 		train_output_path = project['path']
 		train_dirs = os.listdir(train_output_path)
 		train_dirs = [item for item in train_dirs if not (item.startswith('.') or item.startswith('..'))]
-		heads = ['option', '开始时间', '结束时间', '训练时长', 'eopchs', 'eopch', '进度', 'lr', 'current_lr', 'loss', '测试']
+		heads = ['option', '开始时间', '结束时间', '训练时长', 'eopchs', 'eopch', '进度', 'lr', 'current_lr', 'loss', '测试', 'model']
 		bodys = []
-		for item in reversed(train_dirs):
-			detail = train_detail(train_output_path + item)
+		for start_time in reversed(train_dirs):
+			detail = train_detail(train_output_path + start_time)
 			option_name = detail[0]
-			bodys.append([option_name, item] + detail[1:])
+			model_name = detail[1]
+			bodys.append([option_name, start_time] + detail[2:] + [model_name])
 		return json.dumps(dict(heads=heads, bodys=bodys))
 	else:
 		return json.dumps([])
@@ -68,6 +69,7 @@ def train_detail(train_path):
 	if os.path.exists(train_path + '/option.json'):
 		options = json.loads(lake.file.read(train_path + '/option.json'))
 		option_name = options.get('option_name', '')
+		model_name = options.get('model_name', '')
 		epochs = int(options.get('epochs', ''))
 		lr = options.get('lr', '')
 	if os.path.exists(train_path + '/record.txt'):
@@ -101,7 +103,7 @@ def train_detail(train_path):
 		progress = str(int(epoch * 100.0 / epochs)) + '%'
 	else:
 		progress = '0%'
-	return [option_name, end_time, train_time, epochs, epoch, progress, lr, current_lr, loss, test]
+	return [option_name, model_name, end_time, train_time, epochs, epoch, progress, lr, current_lr, loss, test]
 
 
 @app.route('/data/train.json', methods=['GET'])
