@@ -4,7 +4,18 @@
 
 [lake](https://github.com/CosmosShadow/lake)
 
-### run
+
+### 使用
+
+#### 配制
+
+```
+mv data/projects_template.csv data/projects.csv
+```
+
+然后到projects.csv中添加需要查看的项目
+
+#### 启动
 
 ```powershell
 python server.py
